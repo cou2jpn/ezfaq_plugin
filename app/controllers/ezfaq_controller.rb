@@ -77,7 +77,7 @@ class EzfaqController < ApplicationController
         attachments = Attachment.attach_files(@faq, params[:attachments])
         render_attachment_warning_if_needed(@faq)
         flash[:notice] = l(:notice_successful_create)
-        FaqMailer.deliver_faq_add(@project, @faq)
+        FaqMailer.deliver_faq_add(@project, @faq) if Setting.notified_events.include? "faq_new"
         redirect_to :controller => 'ezfaq', :action => 'show', :id => @project, :faq_id => @faq
         return
       end		
@@ -100,7 +100,7 @@ class EzfaqController < ApplicationController
         attachments = Attachment.attach_files(@faq, params[:attachments])
         render_attachment_warning_if_needed(@faq)
         flash[:notice] = l(:notice_successful_update)
-        FaqMailer.deliver_faq_update(@project, @faq)
+        FaqMailer.deliver_faq_update(@project, @faq) if Setting.notified_events.include? "faq_updated"
         redirect_to :controller => 'ezfaq', :action => 'show', :id => @project, :faq_id => @faq
         return
       end
@@ -117,7 +117,7 @@ class EzfaqController < ApplicationController
       # admin is allowed to copy faqs to any active (visible) project
       @allowed_projects = Project.find(:all, :conditions => Project.visible_by(User.current))
     else
-      User.current.memberships.each {|m| @allowed_projects << m.project if m.role.allowed_to?(:edit_faqs)}
+      User.current.memberships.each {|m| @allowed_projects << m.project if m.roles.detect {|r| r.allowed_to?(:edit_faqs)}}
     end
     @target_project = @allowed_projects.detect {|p| p.id.to_s == params[:new_project_id]} if params[:new_project_id]
     @target_project ||= @project
@@ -206,7 +206,7 @@ private
   def faq_to_pdf
     faq_setting = FaqSetting.find(:first, :conditions => "project_id = #{@project.id}")
 
-    pdf = IFPDF.new(current_language)
+    pdf = ITCPDF.new(current_language)
     pdf.SetTitle("#{l(:label_faq)}-#{@faq.question}")
     pdf.SetAuthor('ezFAQ for Redmine')
     pdf.AliasNbPages
@@ -214,27 +214,27 @@ private
     pdf.AddPage
     
     pdf.SetFontStyle('B',16)
-    pdf.Cell(200,5, faq_setting.pdf_title)
+    pdf.RDMCell(200,5, faq_setting.pdf_title)
     pdf.Ln(15)
 
     pdf.SetFontStyle('B',11)
-    pdf.Cell(200,5, "#{l(:field_question)}: #{@faq.question}")
+    pdf.RDMCell(200,5, "#{l(:field_question)}: #{@faq.question}")
     pdf.Ln
     pdf.Line(pdf.GetX, pdf.GetY, 180, pdf.GetY)
     pdf.Ln
     pdf.SetFontStyle('',11)
-    pdf.MultiCell(200,5, @faq.answer)
+    pdf.RDMMultiCell(200,5, @faq.answer)
     pdf.Ln
 
     pdf.Line(pdf.GetX, pdf.GetY, 100, pdf.GetY)
     pdf.SetFontStyle('I',8)
-    pdf.Cell(200,5, 'Auto generated faq-document by ezFAQ. Powered by ezWORK & Redmine.')
+    pdf.RDMCell(200,5, 'Auto generated faq-document by ezFAQ. Powered by ezWORK & Redmine.')
 
     pdf.Output
   end
 
   def faqs_to_pdf
-    pdf = IFPDF.new(current_language)
+    pdf = ITCPDF.new(current_language)
     pdf.SetTitle(@faq_setting.pdf_title) if (@faq_setting && @faq_setting.pdf_title)
     pdf.SetAuthor('ezFAQ for Redmine')
     pdf.AliasNbPages
@@ -243,14 +243,14 @@ private
 
     pdf.SetFontStyle('B',16)
     if (@faq_setting && @faq_setting.pdf_title)
-      pdf.Cell(200,5, @faq_setting.pdf_title)
+      pdf.RDMCell(200,5, @faq_setting.pdf_title)
     else
-      pdf.Cell(200,5, l(:text_faq_pdf_title_not_set))
+      pdf.RDMCell(200,5, l(:text_faq_pdf_title_not_set))
     end
     
     pdf.Ln(10)
     pdf.SetFontStyle('',11)
-    pdf.MultiCell(180,5, @faq_setting.note) if (@faq_setting && @faq_setting.note)
+    pdf.RDMMultiCell(180,5, @faq_setting.note) if (@faq_setting && @faq_setting.note)
     pdf.Ln
     pdf.Line(pdf.GetX, pdf.GetY, 180, pdf.GetY)
     pdf.Ln
@@ -259,15 +259,15 @@ private
     if @categorized_faqs.any?
       @categorized_faqs.group_by(&:category).sort.each do |category, faqs|
         pdf.SetFontStyle('BI', 13)
-        pdf.Cell(200,5, "#{list_number}. #{category.name}")
+        pdf.RDMCell(200,5, "#{list_number}. #{category.name}")
         pdf.Ln
         faq_number = 1
         for faq in faqs.sort
           pdf.SetFontStyle('B',11)
-          pdf.Cell(200,5, "#{list_number}.#{faq_number} #{faq.question}")
+          pdf.RDMCell(200,5, "#{list_number}.#{faq_number} #{faq.question}")
           pdf.Ln
           pdf.SetFontStyle('',11)
-          pdf.MultiCell(200,5, faq.answer)
+          pdf.RDMMultiCell(200,5, faq.answer)
           pdf.Ln
           faq_number += 1
         end
@@ -278,15 +278,15 @@ private
     
     if @not_categorized_faqs.any?
       pdf.SetFontStyle('BI', 13)
-      pdf.Cell(200,5, "#{list_number}. #{l(:label_not_categorized)}")
+      pdf.RDMCell(200,5, "#{list_number}. #{l(:label_not_categorized)}")
       pdf.Ln
       faq_number = 1
       for faq in @not_categorized_faqs.sort
         pdf.SetFontStyle('B',11)
-        pdf.Cell(200,5, "#{list_number}.#{faq_number} #{faq.question}")
+        pdf.RDMCell(200,5, "#{list_number}.#{faq_number} #{faq.question}")
         pdf.Ln
         pdf.SetFontStyle('',11)
-        pdf.MultiCell(200,5, faq.answer)
+        pdf.RDMMultiCell(200,5, faq.answer)
         pdf.Ln(10)
         faq_number += 1
       end      
@@ -294,7 +294,7 @@ private
 
     pdf.Line(pdf.GetX, pdf.GetY, 100, pdf.GetY)
     pdf.SetFontStyle('I',8)
-    pdf.Cell(200,5, 'Auto generated faq-list by ezFAQ. Powered by ezWORK & Redmine.')
+    pdf.RDMCell(200,5, 'Auto generated faq-list by ezFAQ. Powered by ezWORK & Redmine.')
 
     pdf.Output
   end

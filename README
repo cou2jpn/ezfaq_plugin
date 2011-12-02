@@ -1,3 +1,14 @@
+2011-12-02
+==========
+This version requires Redmine 1.2.0 or higher. Therefore, the version number was increased.
+
+ * Fixed copy function.
+ * Modified to use Mailer::render_multipart method. also it can choose notification.
+ * Switch IFPDF class to ITCPDF class.
+ * Replace {{key}] to %{key} in locale files.
+
+ * Tested on Redmine 1.2.2
+
 2011-06-01
 ==========
 This is a fork of original ezfaq, a FAQ management plugin for Redmine by Zou Chaoqun. The goal is to fix bugs and merge existing patches for daily use.

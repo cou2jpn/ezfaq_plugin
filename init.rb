@@ -23,6 +23,7 @@ require 'attachment_patch'
 Dispatcher.to_prepare do
   Attachment.send(:include, AttachmentPatch)
 end
+require 'ezfaq_notifiable_patch'
 
 # Hooks
 require_dependency 'ezfaq_layouts_hook'
@@ -31,9 +32,10 @@ Redmine::Plugin.register :ezfaq_plugin do
   name 'ezFAQ plugin'
   author 'Zou Chaoqun'
   description 'This is a FAQ management plugin for Redmine'
-  version '0.3.5'
+  version '0.4.0'
   url 'http://ezwork.techcon.thtf.com.cn/projects/ezwork'
   author_url 'mailto:zouchaoqun@gmail.com'
+  requires_redmine :version_or_higher => '1.2.0'
 
   project_module :ezfaq do
     permission :view_faqs, {:ezfaq => [:index, :show, :history, :diff, :show_history_version]}, :public => true

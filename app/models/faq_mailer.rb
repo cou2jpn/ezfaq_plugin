@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class FaqMailer < Mailer
+  self.instance_variable_get("@inheritable_attributes")[:view_paths] << RAILS_ROOT + "/vendor/plugins/ezfaq_plugin/app/views"
 
   def faq_add(project, faq)    
     redmine_headers 'Project' => faq.project.identifier,
@@ -31,15 +32,7 @@ class FaqMailer < Mailer
     body :faq => faq,
          :faq_url => url_for(:controller => 'ezfaq', :action => 'show', :id => project, :faq_id => faq)
 
-    content_type "multipart/alternative"
-
-    part "text/plain" do |p|
-      p.body = render_message("faq_add.text.plain.rhtml", body)
-    end
-
-    part "text/html" do |p|
-      p.body = render_message("faq_add.text.html.rhtml", body)
-    end
+    render_multipart('faq_add', body)
 
   end
   
@@ -57,15 +50,7 @@ class FaqMailer < Mailer
     body :faq => faq,
          :faq_url => url_for(:controller => 'ezfaq', :action => 'show', :id => project, :faq_id => faq)
 
-    content_type "multipart/alternative"
-
-    part "text/plain" do |p|
-      p.body = render_message("faq_update.text.plain.rhtml", body)
-    end
-
-    part "text/html" do |p|
-      p.body = render_message("faq_update.text.html.rhtml", body)
-    end
+    render_multipart('faq_update', body)
 
   end
   

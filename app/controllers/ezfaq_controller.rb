@@ -223,10 +223,10 @@ private
     pdf.Line(pdf.GetX, pdf.GetY, 180, pdf.GetY)
     pdf.Ln
     pdf.SetFontStyle('',11)
-    pdf.RDMMultiCell(200,5, @faq.answer)
+    pdf.RDMwriteHTMLCell(200,5,0,0, @faq.answer)
     pdf.Ln
 
-    pdf.Line(pdf.GetX, pdf.GetY, 100, pdf.GetY)
+    pdf.Line(pdf.GetX, pdf.GetY, 107, pdf.GetY)
     pdf.SetFontStyle('I',8)
     pdf.RDMCell(200,5, 'Auto generated faq-document by ezFAQ. Powered by ezWORK & Redmine.')
 
@@ -267,7 +267,7 @@ private
           pdf.RDMCell(200,5, "#{list_number}.#{faq_number} #{faq.question}")
           pdf.Ln
           pdf.SetFontStyle('',11)
-          pdf.RDMMultiCell(200,5, faq.answer)
+          pdf.RDMwriteHTMLCell(200,5,0,0, faq.answer)
           pdf.Ln
           faq_number += 1
         end
@@ -286,13 +286,13 @@ private
         pdf.RDMCell(200,5, "#{list_number}.#{faq_number} #{faq.question}")
         pdf.Ln
         pdf.SetFontStyle('',11)
-        pdf.RDMMultiCell(200,5, faq.answer)
+        pdf.RDMwriteHTMLCell(200,5,0,0, faq.answer)
         pdf.Ln(10)
         faq_number += 1
       end      
     end
 
-    pdf.Line(pdf.GetX, pdf.GetY, 100, pdf.GetY)
+    pdf.Line(pdf.GetX, pdf.GetY, 107, pdf.GetY)
     pdf.SetFontStyle('I',8)
     pdf.RDMCell(200,5, 'Auto generated faq-list by ezFAQ. Powered by ezWORK & Redmine.')
 

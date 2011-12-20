@@ -1,13 +1,13 @@
 module EzFaqNotifiablePatch
   def self.included(base) # :nodoc:
-    @is_wrap = false
+    @is_faq_wrap = false
     base.extend NotifiableMethods
     base.class_eval do
       unloadable
       class << self
-        if !@is_wrap
+        if !@is_faq_wrap
           alias_method_chain :all, :ezfaq_updates
-          @is_wrap = true
+          @is_faq_wrap = true
         end
       end
     end

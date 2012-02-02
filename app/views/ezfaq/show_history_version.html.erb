@@ -38,6 +38,14 @@
 </tr>
 </table>
 
+<% unless @faq.faqdetails.blank? -%>
+  <hr />
+  <p><strong><%=l(:field_faqdetails)%></strong></p>
+  <div class="wiki">
+  <%= textilizable @faq_version, :faqdetails %>
+  </div>
+<% end -%>
+
 <hr />
 <p><strong><%=l(:field_answer)%></strong></p>
 <div class="wiki">

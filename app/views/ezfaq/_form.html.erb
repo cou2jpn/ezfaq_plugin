@@ -14,13 +14,14 @@ function change_stars() {
 </script>
 
 <p><%= f.text_field :question, :size => 80, :required => true %></p>
-<p><%= f.text_area :answer,
+<p><%= f.text_area :faqdetails,
                    :cols => 60,
-                   :rows => (@faq.answer.blank? ? 10 : [[10, @faq.answer.length / 50].max, 100].min),
+                   :rows => (@faq.faqdetails.blank? ? 8 : [[8, @faq.faqdetails.length / 50].max, 100].min),
                    :accesskey => accesskey(:edit),
                    :class => 'wiki-edit' %></p>
-             
+<hr />
 <div class="splitcontentleft">
+<p><%= f.select (:is_valid, [[l(:label_valid), true], [l(:label_invalid), false]]) if action_name == 'edit' %> </p>
 <p><%= f.select :category_id, (@faq_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
 <%= prompt_to_remote(l(:label_faq_category_new),
                      l(:label_faq_category_new), 'category[name]', 
@@ -28,7 +29,7 @@ function change_stars() {
                      :class => 'small', :tabindex => 199) if authorize_for('ezfaq', 'add_faq_category') %></p>
 <p>
 <%= f.select :difficulty, (1..10), {}, :required => true, :onchange => "change_stars();"%>
-<%= image_tag("stars_5.png", :plugin => "ezfaq_plugin", :id => "stars_img", :alt => "#{l(:field_difficulty)}5", :title => "#{l(:field_difficulty)}5") %>
+<%= image_tag("stars_#{@faq.difficulty}.png", :plugin => "ezfaq_plugin", :id => "stars_img", :alt => "#{l(:field_difficulty)}#{@faq.difficulty}", :title => "#{l(:field_difficulty)}#{@faq.difficulty}") %>
 </p>
 <p><%= f.text_field :related_issue_id, :size => 10 %> <%= l(:label_info_for_input_id) %></p>
 <p><%= f.select :related_version_id, @project.versions.sort.collect {|v| [v.name, v.id]}, :include_blank => true %></p>
@@ -39,12 +40,17 @@ function change_stars() {
 <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('faq_due_date') %></p>
 <p><%= f.text_field :related_message_id, :size => 10 %> <%= l(:label_info_for_input_id) %></p>
 </div>
+<p><%= f.text_area :answer,
+                   :cols => 60,
+                   :rows => (@faq.answer.blank? ? 8 : [[8, @faq.answer.length / 50].max, 100].min),
+                   :accesskey => accesskey(:edit),
+                   :class => 'wiki-edit' %></p>
 
 <%= hidden_field_tag 'difficulty_label', l(:field_difficulty) %>
 
 <p />
-<% if @faq.new_record? %>
-<p><label><%=l(:label_attachment_plural)%></label><%= render :partial => 'attachments/form' %></p>
-<% end %>
 
+<p><label><%=l(:label_attachment_plural)%></label><%= render :partial => 'attachments/form' %></p>
+
+<%= wikitoolbar_for 'faq_faqdetails' %>
 <%= wikitoolbar_for 'faq_answer' %>

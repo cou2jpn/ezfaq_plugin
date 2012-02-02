@@ -16,6 +16,12 @@
 </p>
 
 <table width="100%">
+<% unless @faq.is_valid? -%>
+<tr>
+    <td><b><%=l(:field_is_valid)%>:</b></td><td><%= "<span class='attention'>#{l(:label_invalid)}</span>" %></td>
+    <td></td><td></td>
+</tr>
+<% end -%>
 <tr>
     <td style="width:15%"><b><%=l(:field_category)%>:</b></td>
     <td style="width:35%"><%= @faq.category ? @faq.category : "-" %></td>
@@ -34,11 +40,15 @@
     <td><b><%=l(:field_related_version)%>:</b></td><td><%= @faq.related_version ? link_to(h(@faq.related_version.name), :controller => 'versions', :action => 'show', :id => @faq.related_version):"-" %></td>
     <td><b><%=l(:field_viewed_count)%>:</b></td><td><%= @faq.viewed_count %></td>
 </tr>
-<tr>
-    <td><b><%=l(:field_is_valid)%>:</b></td><td><%= @faq.is_valid ? l(:label_valid):"<span class='attention'>#{l(:label_invalid)}</span>" %></td>
-    <td></td><td></td>
-</tr>
 </table>
+
+<% unless @faq.faqdetails.blank? -%>
+  <hr />
+  <p><strong><%=l(:field_faqdetails)%></strong></p>
+  <div class="wiki">
+  <%= textilizable @faq, :faqdetails %>
+  </div>
+<% end -%>
 
 <hr />
 <p><strong><%=l(:field_answer)%></strong></p>

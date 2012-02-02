@@ -18,6 +18,7 @@
 class EzfaqController < ApplicationController
   unloadable
   
+  default_search_scope :faqs
   layout 'base'  
   before_filter :find_project, :authorize
   before_filter :find_faq, :only => [:show, :edit, :copy, :destroy, :history, :show_history_version]
@@ -86,8 +87,9 @@ class EzfaqController < ApplicationController
 
   # Action to preview the FAQ answer
   def preview
-    @text = params[:faq][:answer]
-    render :partial => 'common/preview'
+    @faqdetails = params[:faq][:faqdetails]
+    @answer = params[:faq][:answer]
+    render :partial => 'preview'
   end
 
   def edit
@@ -113,12 +115,7 @@ class EzfaqController < ApplicationController
   def copy
     @allowed_projects = []
     # find projects to which the user is allowed to copy the faq
-    if User.current.admin?
-      # admin is allowed to copy faqs to any active (visible) project
-      @allowed_projects = Project.find(:all, :conditions => Project.visible_by(User.current))
-    else
-      User.current.memberships.each {|m| @allowed_projects << m.project if m.roles.detect {|r| r.allowed_to?(:edit_faqs)}}
-    end
+    @allowed_projects = Project.find(:all, :conditions => Project.allowed_to_condition(User.current, :add_faqs, :active_only => true), :order => 'lft')
     @target_project = @allowed_projects.detect {|p| p.id.to_s == params[:new_project_id]} if params[:new_project_id]
     @target_project ||= @project
     if request.post?

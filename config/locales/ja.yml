@@ -21,15 +21,16 @@ ja:
   field_question: 質問
   field_answer: 回答
   field_difficulty: 難易度
-  field_viewed_count: 表示
+  field_viewed_count: 閲覧回数
   field_related_version: 関連するバージョン
   field_related_issue: 関連するチケット
-  field_related_message: 関連するメッセージ
-  field_is_valid: 有効
+  field_related_message: 関連するフォーラムメッセージ
+  field_is_valid: 有効/無効
   field_faq_counts_under_category: FAQのカウント
   field_pdf_title: PDF文書のタイトル
   field_faq_note: FAQについて(FAQ一覧の前に表示されます)
   field_note: FAQについて
+  field_faqdetails: 質問詳細
 
   text_faq_category_destroy_question: いくつかのFAQ (%{value}) は、このカテゴリに分類されています。よろしいですか?
   text_faq_category_destroy_assignments: カテゴリからFAQを解除する

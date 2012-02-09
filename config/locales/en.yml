@@ -25,11 +25,12 @@ en:
   field_related_version: Related version
   field_related_issue: Related issue
   field_related_message: Related Message
-  field_is_valid: Valid
+  field_is_valid: Valid/Invalid
   field_faq_counts_under_category: FAQ count
   field_pdf_title: Title of PDF document
   field_faq_note: FAQ note(Displayed before the FAQ list)
   field_note: FAQ note
+  field_faqdetails: FAQ details
 
   text_faq_category_destroy_question: Some FAQ (%{value}) is assigned to this category. What do you want to do ?
   text_faq_category_destroy_assignments: Remove category assignments

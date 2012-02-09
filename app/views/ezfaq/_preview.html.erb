@@ -1,0 +1,10 @@
+<% unless @faqdetails.blank? %>
+  <fieldset class="preview"><legend><%= l(:field_faqdetails) %></legend>
+  <%= textilizable @faqdetails, :attachments => @attachements, :object => @previewed %>
+  </fieldset>
+<% end %>
+<% unless @answer.blank? %>
+  <fieldset class="preview"><legend><%= l(:field_answer) %></legend>
+  <%= textilizable @answer, :attachments => @attachements, :object => @previewed %>
+  </fieldset>
+<% end %>

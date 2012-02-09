@@ -2,6 +2,7 @@ class Faq < ActiveRecord::Base
   unloadable
   set_locking_column :version
 
+  has_many :faq_versions, :dependent => :destroy
   belongs_to :category, :class_name => 'FaqCategory', :foreign_key => 'category_id'
   belongs_to :project
   belongs_to :author, :class_name => 'User', :foreign_key => 'author_id'
@@ -11,7 +12,7 @@ class Faq < ActiveRecord::Base
 
   acts_as_attachable
 
-  acts_as_searchable :columns => ["#{table_name}.question", "#{table_name}.answer"],
+  acts_as_searchable :columns => ["#{table_name}.question", "#{table_name}.faqdetails", "#{table_name}.answer"],
                         :include => [:project]
 
   acts_as_event :title => Proc.new {|o| "#{l(:label_title_ezfaq)} ##{o.id}: #{o.question}" },

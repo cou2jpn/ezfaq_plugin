@@ -1,3 +1,4 @@
+<div class="box tabular">
 <script type="text/javascript">
 //<![CDATA[
 function change_stars() {
@@ -21,7 +22,9 @@ function change_stars() {
                    :class => 'wiki-edit' %></p>
 <hr />
 <div class="splitcontentleft">
-<p><%= f.select (:is_valid, [[l(:label_valid), true], [l(:label_invalid), false]]) if action_name == 'edit' %> </p>
+<% if action_name == 'edit' %>
+<p><%= f.select(:is_valid, [[l(:label_valid), true], [l(:label_invalid), false]]) %></p>
+<% end %>
 <p><%= f.select :category_id, (@faq_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
 <%= prompt_to_remote(l(:label_faq_category_new),
                      l(:label_faq_category_new), 'category[name]', 
@@ -54,3 +57,4 @@ function change_stars() {
 
 <%= wikitoolbar_for 'faq_faqdetails' %>
 <%= wikitoolbar_for 'faq_answer' %>
+</div>
